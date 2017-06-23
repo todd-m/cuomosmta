@@ -19,19 +19,19 @@ ActiveRecord::Schema.define(version: 20170623021218) do
   end
 
   create_table "responses", force: :cascade do |t|
-    t.string   "message"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string   "message",    limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "name"
-    t.string   "tweet_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer  "user_id"
+    t.string   "name",       limit: 255
+    t.string   "tweet_id",   limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.integer  "user_id",    limit: 4
   end
 
-  add_index "users", ["user_id"], name: "index_users_on_user_id", unique: true
+  add_index "users", ["user_id"], name: "index_users_on_user_id", unique: true, using: :btree
 
 end
