@@ -28,6 +28,9 @@ gem 'twitter'
 gem 'figaro'
 gem 'randumb'
 
+gem 'oauth'
+gem 'devnull'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

@@ -18,6 +18,6 @@ class Bot < ActiveRecord::Base
   end
 
   def self.respond(name)
-    "@#{name} #{Response.last}"
+    "@#{name} #{Response.last.message}"
   end
 end
