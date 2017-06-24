@@ -7,6 +7,7 @@ class Bot < ActiveRecord::Base
       if self.should_respond_to?(tweet)
         # send a tweet by calling the respond method;
         # the new tweet is a reply to the saved tweet_id
+        puts "Responding to #{tweet.user.screen_name}. Cuomo owns the subway!"
         TWITTER_CLIENT.update(Bot.respond(tweet.user.screen_name), in_reply_to_status_id: tweet.id)
       else
         puts "Already responded to #{tweet.user.screen_name}, so letting this one go by."
@@ -19,8 +20,7 @@ class Bot < ActiveRecord::Base
   # a filter on our users fetch...
   def self.should_respond_to?(tweet)
     # record twitter user so we don't spam them
-    user = User.where(name: tweet.user.screen_name, tweet_id: tweet.id, 
-      user_id: tweet.user.id).first_or_initialize
+    user = User.where(user_id: tweet.user.id).first_or_initialize
 
     # is user whitelisted?
     return true if user.name == 'bluenoteslur'
@@ -29,6 +29,9 @@ class Bot < ActiveRecord::Base
     return false unless user.id == nil
 
     # otherwise, let's save the user so we don't spam them...
+    user.user_id = tweet.user.id
+    user.name = tweet.user.screen_name
+    user.tweet_id = tweet.id
     user.save!
 
     #...and tell the caller to fire off a pithy reply, just this once!
