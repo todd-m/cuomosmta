@@ -4,16 +4,12 @@ class Bot < ActiveRecord::Base
     # find tweets
     TWITTER_CLIENT.search(words, lang: 'en').take(number).each do |tweet|
 
-      # record twitter user so we don't spam them
-      user = User.where(name: tweet.user.screen_name, tweet_id: tweet.id, 
-        user_id: tweet.user.id).first_or_create
-
-      # send a tweet by calling the respond method;
-      # the new tweet is a reply to the saved tweet_id
-      if self.should_respond_to?(user)
+      if self.should_respond_to?(tweet)
+        # send a tweet by calling the respond method;
+        # the new tweet is a reply to the saved tweet_id
         TWITTER_CLIENT.update(Bot.respond(tweet.user.screen_name), in_reply_to_status_id: tweet.id)
       else
-        puts "Not responding to user #{user.name}."
+        puts "Already responded to #{tweet.user.screen_name}, so letting this one go by."
       end
     end
   end
@@ -21,14 +17,22 @@ class Bot < ActiveRecord::Base
   # Determine whether to respond to a tweet based on who the user is
   # In future, might want to break out blacklisting/whitelisting into
   # a filter on our users fetch...
-  def self.should_respond_to?(user)
+  def self.should_respond_to?(tweet)
+    # record twitter user so we don't spam them
+    user = User.where(name: tweet.user.screen_name, tweet_id: tweet.id, 
+      user_id: tweet.user.id).first_or_initialize
+
     # is user whitelisted?
     return true if user.name == 'bluenoteslur'
 
-    # TODO have we responded before? only want to respond once
-    false
+    # have we responded before? only want to respond once
+    return false unless user.id == nil
 
-    #TODO otherwise, let's reply just this once!
+    # otherwise, let's save the user so we don't spam them...
+    user.save!
+
+    #...and tell the caller to fire off a pithy reply, just this once!
+    true
   end
 
   def self.search_words(words)
