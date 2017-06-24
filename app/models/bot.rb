@@ -5,13 +5,19 @@ class Bot < ActiveRecord::Base
     TWITTER_CLIENT.search(words, lang: 'en').take(number).each do |tweet|
 
       # record twitter user so we don't spam them
-      User.create(name: tweet.user.screen_name, tweet_id: tweet.id.to_s)
+      User.create(name: tweet.user.screen_name, tweet_id: tweet.id.to_s, user_id: tweet.user.id)
 
       # send a tweet by calling the respond method;
       # the new tweet is a reply to the saved tweet_id
-      TWITTER_CLIENT.update(Bot.respond(tweet.user.screen_name), in_reply_to_status_id: tweet.id)
+      # if self.should_respond?
+        TWITTER_CLIENT.update(Bot.respond(tweet.user.screen_name), in_reply_to_status_id: tweet.id)
+      # else
+      #   puts "Not responding to this one."
+      # end
     end
   end
+
+  # def
 
   def self.search_words(words)
     TWITTER_CLIENT.search(words, lang: 'en').first.text
