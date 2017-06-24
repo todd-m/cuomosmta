@@ -5,7 +5,7 @@ class Bot < ActiveRecord::Base
     TWITTER_CLIENT.search(words, lang: 'en').take(number).each do |tweet|
 
       # record twitter user so we don't spam them
-      user = User.where(name: tweet.user.screen_name, tweet_id: tweet.id.to_s, 
+      user = User.where(name: tweet.user.screen_name, tweet_id: tweet.id, 
         user_id: tweet.user.id).first_or_create
 
       # send a tweet by calling the respond method;

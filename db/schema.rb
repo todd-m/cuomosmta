@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170623021218) do
+ActiveRecord::Schema.define(version: 20170624003648) do
 
   create_table "bots", force: :cascade do |t|
     t.datetime "created_at", null: false
@@ -26,7 +26,7 @@ ActiveRecord::Schema.define(version: 20170623021218) do
 
   create_table "users", force: :cascade do |t|
     t.string   "name",       limit: 255
-    t.string   "tweet_id",   limit: 255
+    t.integer  "tweet_id",   limit: 8
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
     t.integer  "user_id",    limit: 4
