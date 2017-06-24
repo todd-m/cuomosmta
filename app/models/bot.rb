@@ -13,7 +13,7 @@ class Bot < ActiveRecord::Base
       if self.should_respond_to?(user)
         TWITTER_CLIENT.update(Bot.respond(tweet.user.screen_name), in_reply_to_status_id: tweet.id)
       else
-        puts "Not responding to user #{user}."
+        puts "Not responding to user #{user.name}."
       end
     end
   end
@@ -23,7 +23,8 @@ class Bot < ActiveRecord::Base
   # a filter on our users fetch...
   def self.should_respond_to?(user)
     # is user whitelisted?
-    true if user.name == 'bluenoteslur'
+    return true if user.name == 'bluenoteslur'
+
     # TODO have we responded before? only want to respond once
     false
 
@@ -35,6 +36,6 @@ class Bot < ActiveRecord::Base
   end
 
   def self.respond(name)
-    "@#{name} #{Response.last.message}"
+    "@#{name} #{Time.now}" #{Response.last.message}"
   end
 end
